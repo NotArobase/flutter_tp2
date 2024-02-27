@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'Exercice1.dart';
 import 'Exercice2.dart';
 import 'Exercice4.dart';
+import 'Exercice5.dart';
+import 'Exercice6.dart';
 
 void main() {
   runApp(MyApp());
@@ -54,6 +56,28 @@ class MenuPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Exercise4Page()),
+                );
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: Text('Exercice 5'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Exercise5Page()),
+                );
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: Text('Exercice 6'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Exercise6Page()),
                 );
               },
             ),
