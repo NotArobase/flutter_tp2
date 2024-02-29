@@ -15,16 +15,15 @@ class _Exercise2PageState extends State<Exercise2Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Exercise 2'),
+        title: Text('Rotation de l\'image'),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Image with transformations
             Transform(
               transform: Matrix4.identity()
-                ..setEntry(3, 2, 0.001) // Perspective
+                ..setEntry(3, 2, 0.001)
                 ..rotateX(_rotationX)
                 ..rotateY(_rotationY)
                 ..scale(_mirrored ? -_scaleValue : _scaleValue),
@@ -79,7 +78,7 @@ class _Exercise2PageState extends State<Exercise2Page> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Scale'),
+                Text('Échelle'),
                 Slider(
                   value: _scaleValue,
                   min: 0.1,

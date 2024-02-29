@@ -4,75 +4,79 @@ import 'dart:math' as math;
 math.Random random = new math.Random();
 
 class Tile {
-  final Color color;
+  final String imageURL;
   final String name;
   bool isSelected;
   bool isNeighborSelected;
 
-  Tile(this.color, this.name, {this.isSelected = false, this.isNeighborSelected = false});
+  Tile(this.imageURL, this.name, {this.isSelected = false, this.isNeighborSelected = false});
 
-  factory Tile.randomColor(String name) {
+  factory Tile.fragImage(int index, String name) {
     return Tile(
-        Color.fromARGB(
-            255, random.nextInt(255), random.nextInt(255), random.nextInt(255)),
-        name);
-  }
-
-  Color _getColor() {
-    
-      return this.isSelected ? Colors.white : this.color;
+      'https://picsum.photos/512',
+      name,
+    );
   }
 
   String _getTileName() {
-    
-      return this.isSelected ?"Empty" : this.name  ;
-  }
-
-  Color _getTileNameColor() {
-    
-      return this.isSelected ? Colors.black : Colors.white;
+    return this.isSelected ? "Empty" : this.name;
   }
 }
 
-class Exercise6Page extends StatelessWidget {
+class Exercise7Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: PositionedTiles(),
     );
   }
 }
 
-class TileWidget extends StatefulWidget {
+class TileWidget extends StatelessWidget {
   final Tile tile;
   final int index;
+  final int gridColumns;
+  final double tileSize;
   final Function(Tile, int) onTap;
 
-  TileWidget({required this.tile, required this.index, required this.onTap});
+  TileWidget({
+    required this.tile,
+    required this.index,
+    required this.gridColumns,
+    required this.tileSize,
+    required this.onTap,
+  });
 
-  @override
-  _TileWidgetState createState() => _TileWidgetState();
-}
-
-class _TileWidgetState extends State<TileWidget> {
   @override
   Widget build(BuildContext context) {
+    int row = index ~/ gridColumns;
+    int col = index % gridColumns;
+
+    double alignmentX = col * (1 / (gridColumns - 1));
+    double alignmentY = row * (1 / (gridColumns - 1));
+
     return GestureDetector(
       onTap: () {
-        widget.onTap(widget.tile, widget.index);
+        onTap(tile, index);
       },
       child: Container(
         decoration: BoxDecoration(
-          color: widget.tile._getColor(),
-          border: widget.tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
+          border: tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
         ),
-        child: Center(
-          child: Text(
-            widget.tile._getTileName(),
-            style: TextStyle(color: widget.tile._getTileNameColor()),
-          ),
-        ),
+        child: !tile.isSelected
+            ? Image.network(
+                tile.imageURL,
+                alignment: Alignment(-1.0 + 2.0 * alignmentX, -1.0 + 2.0 * alignmentY),
+                width: tileSize,
+                height: tileSize,
+                fit: BoxFit.cover,
+              )
+            : const Center(
+                child: Text(
+                  'Empty',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
       ),
     );
   }
@@ -84,18 +88,21 @@ class PositionedTiles extends StatefulWidget {
 }
 
 class PositionedTilesState extends State<PositionedTiles> {
-  int gridColumns = 4; // Valeur par défaut
+  int gridColumns = 4; // Default number of columns
   int selectedIndex = -1;
   List<Tile> tiles = List<Tile>.generate(
     16,
-    (index) => Tile.randomColor('Tile ${index + 1}'),
+    (index) => Tile.fragImage(index, 'Tile ${index + 1}'),
   );
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double tileSize = screenWidth / gridColumns.toDouble();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tiles qui swappent'),
+        title: Text('Jeu taquin'),
         centerTitle: true,
         actions: [
           IconButton(
@@ -116,7 +123,7 @@ class PositionedTilesState extends State<PositionedTiles> {
                 gridColumns++;
                 regenerateTiles();
                 setState(() {
-                  selectedIndex=-1;
+                  selectedIndex = -1;
                 });
               });
             },
@@ -125,7 +132,6 @@ class PositionedTilesState extends State<PositionedTiles> {
       ),
       body: GestureDetector(
         onTap: () {
-          // Deselect the selected tile when tapping outside GridView
           setState(() {
             selectedIndex = -1;
             updateTiles();
@@ -140,6 +146,8 @@ class PositionedTilesState extends State<PositionedTiles> {
               child: TileWidget(
                 tile: tiles[index],
                 index: index,
+                gridColumns: gridColumns,
+                tileSize: tileSize,
                 onTap: _handleTileTap,
               ),
             );
@@ -153,7 +161,7 @@ class PositionedTilesState extends State<PositionedTiles> {
     setState(() {
       tiles = List<Tile>.generate(
         gridColumns * gridColumns,
-        (index) => Tile.randomColor('Tile ${index + 1}'),
+        (index) => Tile.fragImage(index, 'Tile ${index + 1}'),
       );
     });
   }
@@ -167,44 +175,39 @@ class PositionedTilesState extends State<PositionedTiles> {
   }
 
   void _handleTileTap(Tile tile, int index) {
-  setState(() {
-    if (selectedIndex == -1) {
-      // Sélectionner la tile tapped
-      selectedIndex = index;
-      updateTiles();
-      _updateNeighborSelection();
-    } else {
-      if (_isNeighbor(index, selectedIndex)) {
-        // Swap
-        final Tile tempTile = tiles[selectedIndex];
-        tiles[selectedIndex] = tiles[index];
-        tiles[index] = tempTile;
+    setState(() {
+      if (selectedIndex == -1) {
         selectedIndex = index;
-
-        _updateNeighborSelection();
-
         updateTiles();
+        _updateNeighborSelection();
+      } else {
+        if (_isNeighbor(index, selectedIndex)) {
+          final Tile tempTile = tiles[selectedIndex];
+          tiles[selectedIndex] = tiles[index];
+          tiles[index] = tempTile;
+          selectedIndex = index;
+          _updateNeighborSelection();
+          updateTiles();
+        }
+      }
+    });
+  }
+
+  void _updateNeighborSelection() {
+    if (selectedIndex == -1) {
+      for (int i = 0; i < tiles.length; i++) {
+        tiles[i].isNeighborSelected = false;
+      }
+    } else {
+      for (int i = 0; i < tiles.length; i++) {
+        if (_isNeighbor(i, selectedIndex)) {
+          tiles[i].isNeighborSelected = true;
+        } else {
+          tiles[i].isNeighborSelected = false;
+        }
       }
     }
-  });
-}
-
-void _updateNeighborSelection() {
-  if (selectedIndex == -1){
-    for (int i = 0; i < tiles.length; i++) {
-      tiles[i].isNeighborSelected = false;
-    }
   }
-  else {
-  for (int i = 0; i < tiles.length; i++) {
-    if (_isNeighbor(i, selectedIndex)) {
-      tiles[i].isNeighborSelected = true;
-    } else {
-      tiles[i].isNeighborSelected = false;
-    }
-  }
-  }
-}
 
   bool _isNeighbor(int index1, int index2) {
     int row1 = index1 ~/ gridColumns;

@@ -31,7 +31,7 @@ class Exercise4Page extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Display a Tile as a Cropped Image'),
+        title: Text('Recadrage de l\'image'),
         centerTitle: true,
       ),
       body: Center(
@@ -54,7 +54,7 @@ class Exercise4Page extends StatelessWidget {
     return InkWell(
       child: tile.croppedImageTile(),
       onTap: () {
-        print("tapped on tile");
+        print("tape sur tile");
       },
     );
   }

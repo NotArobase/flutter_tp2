@@ -7,7 +7,6 @@ class Tile {
   Tile({required this.imageURL, required this.alignment});
 
   List<Widget> croppedImageTiles(int taille) {
-    // Split image into a grid of size taille x taille
     List<Widget> tiles = [];
     double tileSize = 1.0 / taille;
     for (int i = 0; i < taille; i++) {
@@ -39,7 +38,7 @@ class Tile {
 final List<Tile> tiles = [
   Tile(
     imageURL: 'https://picsum.photos/512',
-    alignment: Alignment(0, 0),
+    alignment: const Alignment(0, 0),
   )
 ];
 
@@ -53,19 +52,39 @@ class _Exercise5PageState extends State<Exercise5Page> {
 
   @override
   Widget build(BuildContext context) {
-    double spacingFactor = 1.0 / _taille; // Calculate spacing factor
+    double spacingFactor = 1.0 / _taille;
 
     return Scaffold(
       body: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(top: 50), // Adjust this value as needed
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                const Text(
+                  "Vue mosaïque",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
             child: GridView.count(
               shrinkWrap: true,
               primary: false,
               padding: const EdgeInsets.all(20),
-              crossAxisSpacing: 20 * spacingFactor, // Adjust cross axis spacing
-              mainAxisSpacing: 20 * spacingFactor, // Adjust main axis spacing
+              crossAxisSpacing: 20 * spacingFactor,
+              mainAxisSpacing: 20 * spacingFactor,
               crossAxisCount: _taille,
               children: tiles
                   .expand((tile) => tile.croppedImageTiles(_taille))
@@ -81,7 +100,7 @@ class _Exercise5PageState extends State<Exercise5Page> {
             value: _taille.toDouble(),
             min: 2,
             max: 15,
-            divisions: 15-2,
+            divisions: 15 - 2,
             label: _taille.toString(),
             onChanged: (double value) {
               setState(() {
