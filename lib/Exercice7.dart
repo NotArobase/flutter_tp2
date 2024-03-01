@@ -1,32 +1,40 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-math.Random random = new math.Random();
+math.Random random = math.Random();
 
 class Tile {
   final String imageURL;
   final String name;
   bool isSelected;
   bool isNeighborSelected;
+  Alignment alignment;
 
-  Tile(this.imageURL, this.name, {this.isSelected = false, this.isNeighborSelected = false});
+  Tile(this.imageURL, this.name,
+      {this.isSelected = false,
+      this.isNeighborSelected = false,
+      Alignment? alignment})
+      : alignment = alignment ?? Alignment(0, 0);
 
-  factory Tile.fragImage(int index, String name) {
+  factory Tile.fragImage(int index, int gridColumns, String name) {
+    int i = index % gridColumns;
+    int j = index ~/ gridColumns;
+    int taille = gridColumns;
     return Tile(
       'https://picsum.photos/512',
       name,
+      alignment: Alignment(-1.0 + 2.0 * j / (taille - 1),
+          -1.0 + 2.0 * i / (taille - 1)),
     );
-  }
-
-  String _getTileName() {
-    return this.isSelected ? "Empty" : this.name;
   }
 }
 
 class Exercise7Page extends StatelessWidget {
+  const Exercise7Page({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: PositionedTiles(),
     );
   }
@@ -39,21 +47,17 @@ class TileWidget extends StatelessWidget {
   final double tileSize;
   final Function(Tile, int) onTap;
 
-  TileWidget({
-    required this.tile,
-    required this.index,
-    required this.gridColumns,
-    required this.tileSize,
-    required this.onTap,
-  });
+  const TileWidget(
+      {Key? key,
+      required this.tile,
+      required this.index,
+      required this.gridColumns,
+      required this.tileSize,
+      required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int row = index ~/ gridColumns;
-    int col = index % gridColumns;
-
-    double alignmentX = col * (1 / (gridColumns - 1));
-    double alignmentY = row * (1 / (gridColumns - 1));
 
     return GestureDetector(
       onTap: () {
@@ -61,12 +65,13 @@ class TileWidget extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
+          border:
+              tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
         ),
         child: !tile.isSelected
             ? Image.network(
                 tile.imageURL,
-                alignment: Alignment(-1.0 + 2.0 * alignmentX, -1.0 + 2.0 * alignmentY),
+                alignment: tile.alignment,
                 width: tileSize,
                 height: tileSize,
                 fit: BoxFit.cover,
@@ -83,17 +88,22 @@ class TileWidget extends StatelessWidget {
 }
 
 class PositionedTiles extends StatefulWidget {
+  const PositionedTiles({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => PositionedTilesState();
 }
 
 class PositionedTilesState extends State<PositionedTiles> {
-  int gridColumns = 4; // Default number of columns
+  int gridColumns = 4; // Par défaut
   int selectedIndex = -1;
-  List<Tile> tiles = List<Tile>.generate(
-    16,
-    (index) => Tile.fragImage(index, 'Tile ${index + 1}'),
-  );
+  late List<Tile> tiles;
+
+  @override
+  void initState() {
+    super.initState();
+    regenerateTiles();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,29 +112,27 @@ class PositionedTilesState extends State<PositionedTiles> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Jeu taquin'),
+        title: const Text('Jeu taquin'),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.remove),
+            icon: const Icon(Icons.remove),
             onPressed: () {
-              setState(() {
-                if (gridColumns > 2) {
+              if (gridColumns > 2) {
+                setState(() {
                   gridColumns--;
                   regenerateTiles();
-                }
-              });
+                });
+              }
             },
           ),
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {
               setState(() {
                 gridColumns++;
                 regenerateTiles();
-                setState(() {
-                  selectedIndex = -1;
-                });
+                selectedIndex = -1;
               });
             },
           ),
@@ -142,7 +150,7 @@ class PositionedTilesState extends State<PositionedTiles> {
           crossAxisCount: gridColumns,
           children: List.generate(tiles.length, (index) {
             return Padding(
-              padding: EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
               child: TileWidget(
                 tile: tiles[index],
                 index: index,
@@ -161,7 +169,7 @@ class PositionedTilesState extends State<PositionedTiles> {
     setState(() {
       tiles = List<Tile>.generate(
         gridColumns * gridColumns,
-        (index) => Tile.fragImage(index, 'Tile ${index + 1}'),
+        (index) => Tile.fragImage(index, gridColumns, 'Tile ${index + 1}'),
       );
     });
   }
