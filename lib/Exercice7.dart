@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:fluttertoast/fluttertoast.dart';
 
 math.Random random = math.Random();
 
@@ -30,11 +31,12 @@ class Tile {
 }
 
 class Exercise7Page extends StatelessWidget {
-  const Exercise7Page({Key? key}) : super(key: key);
+  const Exercise7Page({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: PositionedTiles(),
     );
   }
@@ -48,13 +50,13 @@ class TileWidget extends StatelessWidget {
   final Function(Tile, int) onTap;
 
   const TileWidget({
-    Key? key,
+    super.key,
     required this.tile,
     required this.index,
     required this.gridColumns,
     required this.tileSize,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +118,10 @@ class PositionedTilesState extends State<PositionedTiles> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double tileSize = 1 / gridColumns.toDouble();
-    print(tileSize);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Jeu taquin'),
+        
         centerTitle: true,
       ),
       body: GestureDetector(
@@ -144,7 +146,7 @@ class PositionedTilesState extends State<PositionedTiles> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
-              icon: Icon(Icons.remove),
+              icon: const Icon(Icons.remove),
               onPressed: () {
                 if (gridColumns > 2) {
                   setState(() {
@@ -156,11 +158,11 @@ class PositionedTilesState extends State<PositionedTiles> {
               },
             ),
             ElevatedButton(
-              onPressed: _scrambleTiles, // Call scramble function here
-              child: Text('Start'),
+              onPressed: _scrambleTiles, // Faire le mélange
+              child: const Text('Mélanger'),
             ),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: () {
                 setState(() {
                   gridColumns++;
@@ -209,6 +211,9 @@ class PositionedTilesState extends State<PositionedTiles> {
           selectedIndex = index;
           _updateNeighborSelection();
           updateTiles();
+          if (_isPuzzleCompleted()) {
+            _showToast();
+          }
         }
       }
     });
@@ -253,5 +258,25 @@ class PositionedTilesState extends State<PositionedTiles> {
       }
       updateTiles();
     });
+  }
+
+  bool _isPuzzleCompleted() {
+    for (int i = 0; i < tiles.length; i++) {
+      if (tiles[i].name != 'Tile ${i + 1}') {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void _showToast() {
+    Fluttertoast.showToast(
+        msg: "Bravo, tu as résolu le taquin",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }
