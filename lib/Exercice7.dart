@@ -14,7 +14,7 @@ class Tile {
       {this.isSelected = false,
       this.isNeighborSelected = false,
       Alignment? alignment})
-      : alignment = alignment ?? Alignment(0, 0);
+      : alignment = alignment ?? const Alignment(0, 0);
 
   factory Tile.fragImage(int index, int gridColumns, String name) {
     int i = index % gridColumns;
@@ -30,7 +30,7 @@ class Tile {
 }
 
 class Exercise7Page extends StatelessWidget {
-  const Exercise7Page({Key? key}) : super(key: key);
+  const Exercise7Page({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +48,13 @@ class TileWidget extends StatelessWidget {
   final Function(Tile, int) onTap;
 
   const TileWidget({
-    Key? key,
+    super.key,
     required this.tile,
     required this.index,
     required this.gridColumns,
     required this.tileSize,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +62,11 @@ class TileWidget extends StatelessWidget {
       onTap: () {
         onTap(tile, index);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          border: tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
-        ),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 500), // Animation duration
+        //decoration: BoxDecoration(
+        //  border: tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
+        //),
         child: !tile.isSelected
             ? FittedBox(
                 fit: BoxFit.fill,
@@ -82,7 +83,7 @@ class TileWidget extends StatelessWidget {
               )
             : const Center(
                 child: Text(
-                  'Empty',
+                  '',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -90,7 +91,6 @@ class TileWidget extends StatelessWidget {
     );
   }
 }
-
 
 class PositionedTiles extends StatefulWidget {
   const PositionedTiles({Key? key}) : super(key: key);
@@ -108,6 +108,11 @@ class PositionedTilesState extends State<PositionedTiles> {
   void initState() {
     super.initState();
     regenerateTiles();
+    // Set the first tile as selected
+    if (tiles.isNotEmpty) {
+      selectedIndex = 0;
+      updateTiles();
+    }
   }
 
   @override
@@ -144,13 +149,6 @@ class PositionedTilesState extends State<PositionedTiles> {
         ],
       ),
       body: GestureDetector(
-        onTap: () {
-          setState(() {
-            selectedIndex = -1;
-            updateTiles();
-            _updateNeighborSelection();
-          });
-        },
         child: GridView.count(
           crossAxisCount: gridColumns,
           children: List.generate(tiles.length, (index) {
