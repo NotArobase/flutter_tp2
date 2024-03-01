@@ -23,8 +23,8 @@ class Tile {
     return Tile(
       'https://picsum.photos/512',
       name,
-      alignment: Alignment(-1.0 + 2.0 * j / (taille - 1),
-          -1.0 + 2.0 * i / (taille - 1)),
+      alignment: Alignment(-1.0 + 2.0 * i / (taille - 1),
+          -1.0 + 2.0 * j / (taille - 1)),
     );
   }
 }
@@ -47,34 +47,38 @@ class TileWidget extends StatelessWidget {
   final double tileSize;
   final Function(Tile, int) onTap;
 
-  const TileWidget(
-      {Key? key,
-      required this.tile,
-      required this.index,
-      required this.gridColumns,
-      required this.tileSize,
-      required this.onTap})
-      : super(key: key);
+  const TileWidget({
+    Key? key,
+    required this.tile,
+    required this.index,
+    required this.gridColumns,
+    required this.tileSize,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
         onTap(tile, index);
       },
       child: Container(
         decoration: BoxDecoration(
-          border:
-              tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
+          border: tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
         ),
         child: !tile.isSelected
-            ? Image.network(
-                tile.imageURL,
-                alignment: tile.alignment,
-                width: tileSize,
-                height: tileSize,
-                fit: BoxFit.cover,
+            ? FittedBox(
+                fit: BoxFit.fill,
+                child: ClipRect(
+                  child: Container(
+                    child: Align(
+                      alignment: tile.alignment,
+                      widthFactor: 0.3, // Example values, you may adjust as needed
+                      heightFactor: 0.3,
+                      child: Image.network(tile.imageURL),
+                    ),
+                  ),
+                ),
               )
             : const Center(
                 child: Text(
@@ -86,6 +90,7 @@ class TileWidget extends StatelessWidget {
     );
   }
 }
+
 
 class PositionedTiles extends StatefulWidget {
   const PositionedTiles({Key? key}) : super(key: key);
