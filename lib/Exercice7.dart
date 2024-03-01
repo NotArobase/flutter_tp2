@@ -31,7 +31,7 @@ class Tile {
 }
 
 class Exercise7Page extends StatelessWidget {
-  const Exercise7Page({super.key});
+  const Exercise7Page({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +50,13 @@ class TileWidget extends StatelessWidget {
   final Function(Tile, int) onTap;
 
   const TileWidget({
-    super.key,
+    Key? key,
     required this.tile,
     required this.index,
     required this.gridColumns,
     required this.tileSize,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +101,7 @@ class PositionedTiles extends StatefulWidget {
 class PositionedTilesState extends State<PositionedTiles> {
   int gridColumns = 4; // Par défaut
   int selectedIndex = -1;
+  int moves = 0; // Track the number of moves
   late List<Tile> tiles;
 
   @override
@@ -121,7 +122,6 @@ class PositionedTilesState extends State<PositionedTiles> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Jeu taquin'),
-        
         centerTitle: true,
       ),
       body: GestureDetector(
@@ -211,6 +211,7 @@ class PositionedTilesState extends State<PositionedTiles> {
           selectedIndex = index;
           _updateNeighborSelection();
           updateTiles();
+          moves++; // Increment moves counter
           if (_isPuzzleCompleted()) {
             _showToast();
           }
@@ -246,8 +247,9 @@ class PositionedTilesState extends State<PositionedTiles> {
 
   void _scrambleTiles() {
     setState(() {
-      // Scramble the tiles by making valid moves
-      for (int i = 0; i < tiles.length * tiles.length; i++) {
+      // Mélange le taquin
+      moves = 0;
+      for (int i = 0; i < tiles.length * tiles.length*5; i++) {
         int randomIndex = random.nextInt(tiles.length);
         if (_isNeighbor(randomIndex, selectedIndex)) {
           final Tile tempTile = tiles[selectedIndex];
@@ -271,7 +273,7 @@ class PositionedTilesState extends State<PositionedTiles> {
 
   void _showToast() {
     Fluttertoast.showToast(
-        msg: "Bravo, tu as résolu le taquin",
+        msg: "Bravo, tu as résolu le taquin en $moves coups",
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
