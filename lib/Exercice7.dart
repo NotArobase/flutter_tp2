@@ -74,8 +74,8 @@ class TileWidget extends StatelessWidget {
                   child: Container(
                     child: Align(
                       alignment: tile.alignment,
-                      widthFactor: 0.3, // Example values, you may adjust as needed
-                      heightFactor: 0.3,
+                      widthFactor: tileSize, // Example values, you may adjust as needed
+                      heightFactor: tileSize,
                       child: Image.network(tile.imageURL),
                     ),
                   ),
@@ -118,8 +118,8 @@ class PositionedTilesState extends State<PositionedTiles> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double tileSize = screenWidth / gridColumns.toDouble();
-
+    double tileSize = 1 / gridColumns.toDouble();
+    print(tileSize);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Jeu taquin'),
