@@ -74,7 +74,7 @@ class TileWidget extends StatelessWidget {
                   child: Container(
                     child: Align(
                       alignment: tile.alignment,
-                      widthFactor: tileSize, // Example values, you may adjust as needed
+                      widthFactor: tileSize,
                       heightFactor: tileSize,
                       child: Image.network(tile.imageURL),
                     ),
@@ -124,29 +124,6 @@ class PositionedTilesState extends State<PositionedTiles> {
       appBar: AppBar(
         title: const Text('Jeu taquin'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.remove),
-            onPressed: () {
-              if (gridColumns > 2) {
-                setState(() {
-                  gridColumns--;
-                  regenerateTiles();
-                });
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              setState(() {
-                gridColumns++;
-                regenerateTiles();
-                selectedIndex = -1;
-              });
-            },
-          ),
-        ],
       ),
       body: GestureDetector(
         child: GridView.count(
@@ -165,6 +142,39 @@ class PositionedTilesState extends State<PositionedTiles> {
           }),
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              icon: Icon(Icons.remove),
+              onPressed: () {
+                if (gridColumns > 2) {
+                  setState(() {
+                    gridColumns--;
+                    selectedIndex = -1;
+                    regenerateTiles();
+                  });
+                }
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+              //qsdfmlj
+              },
+            child: Text('Start')),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  gridColumns++;
+                  regenerateTiles();
+                });
+              },
+            )
+          ],
+        )
+      ),
     );
   }
 
@@ -174,6 +184,10 @@ class PositionedTilesState extends State<PositionedTiles> {
         gridColumns * gridColumns,
         (index) => Tile.fragImage(index, gridColumns, 'Tile ${index + 1}'),
       );
+      if (tiles.isNotEmpty) {
+        selectedIndex = 0;
+        updateTiles();
+      }
     });
   }
 
