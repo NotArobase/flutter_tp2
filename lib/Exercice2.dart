@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Exercise2Page extends StatefulWidget {
+  const Exercise2Page({super.key});
+
   @override
   _Exercise2PageState createState() => _Exercise2PageState();
 }
@@ -15,7 +17,7 @@ class _Exercise2PageState extends State<Exercise2Page> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rotation de l\'image'),
+        title: const Text('Rotation de l\'image'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -40,11 +42,11 @@ class _Exercise2PageState extends State<Exercise2Page> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Rotation X'),
+                const Text('Rotation X'),
                 Slider(
                   value: _rotationX,
                   min: -180 * (3.141592653589793 / 180),
@@ -61,7 +63,7 @@ class _Exercise2PageState extends State<Exercise2Page> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Rotation Y'),
+                const Text('Rotation Y'),
                 Slider(
                   value: _rotationY,
                   min: -180 * (3.141592653589793 / 180),
@@ -78,7 +80,7 @@ class _Exercise2PageState extends State<Exercise2Page> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Échelle'),
+                const Text('Échelle'),
                 Slider(
                   value: _scaleValue,
                   min: 0.1,

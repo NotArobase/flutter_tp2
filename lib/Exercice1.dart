@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Exercise1Page extends StatelessWidget {
+  const Exercise1Page({super.key});
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -13,9 +15,9 @@ class Exercise1Page extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text("Image aléatoire"),
+          title: const Text("Image aléatoire"),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -27,7 +29,7 @@ class Exercise1Page extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Container(
                     width: imageWidth,
                     height: imageHeight,

@@ -11,9 +11,11 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MenuPage(),
     );
@@ -21,11 +23,13 @@ class MyApp extends StatelessWidget {
 }
 
 class MenuPage extends StatelessWidget {
+  const MenuPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TP2 Flutter'),
+        title: const Text('TP2 Flutter'),
       ),
       body: ListView(
         children: [
@@ -34,7 +38,7 @@ class MenuPage extends StatelessWidget {
           buildExerciseListItem(context, 'Exercice 4', 'Affiche une image et sa version cropped', Exercise4Page()),
           buildExerciseListItem(context, 'Exercice 5', 'Affiche une image sous forme de mosaïque', Exercise5Page()),
           buildExerciseListItem(context, 'Exercice 6', 'Simule le jeu taquin avec des numéros et couleurs', Exercise6Page()),
-          buildExerciseListItem(context, 'Exercice 7', 'Jeu taquin avec images', Exercise7Page()),
+          buildExerciseListItem(context, 'Exercice 7', 'Jeu taquin avec images', const Exercise7Page()),
         ],
       ),
     );
@@ -45,7 +49,7 @@ class MenuPage extends StatelessWidget {
       child: ListTile(
         title: Text(title),
         subtitle: Text(description),
-        trailing: Icon(Icons.arrow_forward_ios),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
           Navigator.push(
             context,

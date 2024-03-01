@@ -108,7 +108,7 @@ class PositionedTilesState extends State<PositionedTiles> {
   void initState() {
     super.initState();
     regenerateTiles();
-    // Set the first tile as selected
+    // Sélectionner la première tile
     if (tiles.isNotEmpty) {
       selectedIndex = 0;
       updateTiles();
@@ -211,7 +211,7 @@ class PositionedTilesState extends State<PositionedTiles> {
           selectedIndex = index;
           _updateNeighborSelection();
           updateTiles();
-          moves++; // Increment moves counter
+          moves++;
           if (_isPuzzleCompleted()) {
             _showToast();
           }

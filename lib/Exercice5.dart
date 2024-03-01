@@ -21,8 +21,8 @@ class Tile {
                   widthFactor: tileSize,
                   heightFactor: tileSize,
                   child: Image.network(
-                    this.imageURL,
-                    alignment: this.alignment,
+                    imageURL,
+                    alignment: alignment,
                   ),
                 ),
               ),
@@ -43,6 +43,8 @@ final List<Tile> tiles = [
 ];
 
 class Exercise5Page extends StatefulWidget {
+  const Exercise5Page({super.key});
+
   @override
   _Exercise5PageState createState() => _Exercise5PageState();
 }

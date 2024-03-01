@@ -125,7 +125,7 @@ class PositionedTilesState extends State<PositionedTiles> {
       ),
       body: GestureDetector(
         onTap: () {
-          // Deselect the selected tile when tapping outside GridView
+          // Unselect si on tape en dehors de gridview
           setState(() {
             selectedIndex = -1;
             updateTiles();
