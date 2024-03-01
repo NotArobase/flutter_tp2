@@ -30,11 +30,11 @@ class Tile {
 }
 
 class Exercise7Page extends StatelessWidget {
-  const Exercise7Page({super.key});
+  const Exercise7Page({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: PositionedTiles(),
     );
   }
@@ -48,13 +48,13 @@ class TileWidget extends StatelessWidget {
   final Function(Tile, int) onTap;
 
   const TileWidget({
-    super.key,
+    Key? key,
     required this.tile,
     required this.index,
     required this.gridColumns,
     required this.tileSize,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +64,6 @@ class TileWidget extends StatelessWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 500), // Animation duration
-        //decoration: BoxDecoration(
-        //  border: tile.isNeighborSelected ? Border.all(color: Colors.red, width: 4.0) : null,
-        //),
         child: !tile.isSelected
             ? FittedBox(
                 fit: BoxFit.fill,
@@ -159,10 +156,9 @@ class PositionedTilesState extends State<PositionedTiles> {
               },
             ),
             ElevatedButton(
-              onPressed: () {
-              //qsdfmlj
-              },
-            child: Text('Start')),
+              onPressed: _scrambleTiles, // Call scramble function here
+              child: Text('Start'),
+            ),
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
@@ -173,7 +169,7 @@ class PositionedTilesState extends State<PositionedTiles> {
               },
             )
           ],
-        )
+        ),
       ),
     );
   }
@@ -241,5 +237,21 @@ class PositionedTilesState extends State<PositionedTiles> {
     int col2 = index2 % gridColumns;
     return (row1 == row2 && (col1 - col2).abs() == 1) ||
         (col1 == col2 && (row1 - row2).abs() == 1);
+  }
+
+  void _scrambleTiles() {
+    setState(() {
+      // Scramble the tiles by making valid moves
+      for (int i = 0; i < tiles.length * tiles.length; i++) {
+        int randomIndex = random.nextInt(tiles.length);
+        if (_isNeighbor(randomIndex, selectedIndex)) {
+          final Tile tempTile = tiles[selectedIndex];
+          tiles[selectedIndex] = tiles[randomIndex];
+          tiles[randomIndex] = tempTile;
+          selectedIndex = randomIndex;
+        }
+      }
+      updateTiles();
+    });
   }
 }
